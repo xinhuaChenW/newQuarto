@@ -1,5 +1,44 @@
 ---
-title: "About"
+title: "Chen Xinhua"
+image: ./images/img.jpg
+about:
+  template: trestles
+  links:
+    - icon: github
+      text: Github
+      href: https://github.com/xinhuaChenW
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com
+    # (additional links excluded for brevity)
 ---
 
-About this site
+Chen Xinhua is a Ph.D. candidate for forest tree genetics and breeding at Chinese Academy of Forestry. 
+
+Research subjects: masson pine, tree improvement, drought, transcriptome, microRNA
+
+Skills: molecular cloning, vector construction, transgene, plant tissue regeneration, bioinformatics analysis, genetic data statistic analysis, field test implementation, pine orchard management，computer programming skills (python, R, julia, shell, perl)
+
+## Education
+
+* Guangxi University, Nanning, Guangxi, China
+B.A. in Chemical engineering in Forestry products | Sept 2007 - June 2011
+
+
+* Guangxi University, Nanning, Guangxi, China
+M.S. in Forest tree genetics and breeding | Sept 2012 - June 2015
+
+
+* Chinese Academy of Forestry, Beijing, China
+Ph.D. candidate in Forest tree genetics and breeding | Sept 2019 - present
+
+## Experience
+
+Assistant engineer | Nanning Institute of Forestry  | Nanning, Guangxi, China | Sept 2011 - Sept 2012
+
+Temporal position as vice manager | Shanghang Baisha State-run Forest Farm | Longyan, Fujian, China | May 2017 - July 2017 
+
+Engineer | Nanning Institute of Forestry | Nanning, Guangxi, China | Sept 2015 - Sept 2019
+
+
+你好！欢迎！我是陈新华，这是我的个人博客，用于记录学习和感悟。

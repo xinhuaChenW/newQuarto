@@ -1,0 +1,91 @@
+---
+title: "从push!()看julia强类型语言特性"
+# description: "A summary of methods of adding row to a python DataFrame"
+author:
+  - name: Chen Xinhua
+    url: https://github.com/xinhuaChenW
+    orcid: 0000-0002-4930-7375
+    affiliation: Ph.D. candidate of Forest Tree Genetics and Breeding @ Chinese Academy of Forestry
+    # affiliation-url: https://ucsb-meds.github.io/ 
+date: "2/01/2023"
+categories: [Julia, Array, Vector] # self-defined categories
+  
+format:
+  html:
+    code-fold: false
+jupyter: julia-1.8
+---
+
+总说julia是强类型语言，但是原来感受不是很深，直到用到push!()。
+
+按一般的理解push!()函数可以向vector里添加元素，如，
+
+```{julia}
+#| error: true
+haystack = ["abc","abc","xyz","opq","rst","def","ghk","ccc"]
+needle = "a"
+push!(haystack,needle)
+```
+
+但如果needle有两个元素，push!()就不行，
+```{julia}
+#| error: true
+haystack = ["abc","abc","xyz","opq","rst","def","ghk","ccc"]
+needle = ["a","c"]
+push!(haystack,needle)
+```
+
+其实，问题的本质不在于needle元素的多少，而在于needle的类型，即使needle只有一个元素，但如果类型是Vector{String}，那样也不行，如下：
+```{julia}
+#| error: true
+haystack = ["abc","abc","xyz","opq","rst","def","ghk","ccc"] # 8-element Vector{String}
+push!(haystack,needle)
+needle = ["a"] # 1-element Vector{String}
+push!(haystack,needle)
+```
+
+也同样报错。
+
+为什么？
+因为haystack是一个Vector{String}类型，它要求Vector里的元素是String，才可以添加，至于为什么是Vector{String}类型，这是Julia的类型推断系统决定的。
+因此，当needle是String类型的时候，可以被push!到Vector{String}中，
+也即，添加元素的类型要与目标容器内部的元素类型保持一致。而不在于添加的元素个数，如，
+```{julia}
+#| error: true
+psh1 = [["a","b"],["c","d"],["e","f"]] # 3-element Vector{String}
+
+psh2 = ["x","y"] # 2-element Vector{String}
+
+push!(psh1,psh2)
+```
+psh1的元素类型是Vector{String}因此，psh2作为相同的类型，可以被push。
+
+最重要的是类型，而不是元素个数。
+当然，你也可以理解成psh2看成一个整体，它就只含有一个元素，但这不是本质。
+况且，你看psh2是否为整体，也是要基于它的类型。
+总之，要多留心对象的类型。
+
+其实julia的mannual里将push!()定义得很好了，
+
+![](Image.png)
+push!()是添加item或items到collection里。
+因此，items类型要与collection里的item类型一致。
+
+而相比之，append!()是添加另一个collection里的所有元素到另一个collection里。
+因此，两个函数对待item的方式不一样，push!()看整体，append!()把collection拆开一层（只要是可迭代对象），因此，才会有append!(A,"abc")，得到的是拆开的"a","b","c".
+ 
+ 而且注意，append!()即使失败，也会在目标对象中添加"#undef"元素。
+
+```{julia}
+#| error: true
+psh1 = [["a","b"],["c","d"],["e","f"]] # 3-element Vector{String}
+
+psh2 = ["x","y"] # 2-element Vector{String}
+
+append!(psh1,psh2)
+
+println(psh1)
+```
+
+多个两个元素#undef。
+

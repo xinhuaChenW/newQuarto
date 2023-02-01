@@ -1,0 +1,81 @@
+---
+title: "python,R,Julia的排序对比"
+# description: "A summary of methods of adding row to a python DataFrame"
+author:
+  - name: Chen Xinhua
+    url: https://github.com/xinhuaChenW
+    orcid: 0000-0002-4930-7375
+    affiliation: Ph.D. candidate of Forest Tree Genetics and Breeding @ Chinese Academy of Forestry
+    # affiliation-url: https://ucsb-meds.github.io/ 
+date: "2/01/2023"
+categories: [python, R, Julia, code] # self-defined categories
+  
+format:
+  html:
+    code-fold: false
+jupyter: python3
+# jupyter: julia-1.8
+---
+
+![](juliaPythonR.png)
+
+python的pandas和Julia的DataFrames有无类似情况，将三者放在一起，做一个对比。
+
+
+1. python对读入的kME值文件排序
+
+```{python}
+import pandas as pd
+
+filePath = "D:/githubRepos/newQuarto/mysite/posts/2023-02-01Py_Jl_R_arrangeCompare/"
+moduleColor = "turquoise"
+kMEColName = "kME_MM."+moduleColor
+kME = pd.read_csv(filePath+"kME_MM1.csv")
+Mod = kME[["GeneID",kMEColName]].sort_values(by = kMEColName,ascending=False)
+print(Mod)
+```
+以上结果可以看出，即使列名“kME_MM.turquoise”当中含有“.”号，排序仍然可以正常运行。
+
+2. R 对读入的kME值文件排序
+
+```{r}
+library(dplyr)
+df <- read.csv("D:/githubRepos/newQuarto/mysite/posts/2023-02-01Py_Jl_R_arrangeCompare/kME_MM1.csv")
+df2 <- df[c("GeneID","kME_MM.turquoise")] 
+print(df2)
+
+df3 <- df2 %>% arrange(kME_MM.turquoise)
+print(df3)
+
+df4 <- arrange(df2,desc(kME_MM.turquoise))
+print(df4)
+```
+|           GeneID| kME_MM.turquoise|
+|-----------------|:----------------|
+|1   isoform_74965|       -0.8821846|
+|2   isoform_86622|       -0.8710540|
+|3   isoform_33211|       -0.8633982|
+|4   isoform_68174|       -0.6891558|
+|5  isoform_278451|       -0.3766357|
+|6  isoform_282332|       -0.3712497|
+|7  isoform_105773|       -0.2255115|
+|8   isoform_20223|       -0.1836331|
+|9   isoform_64227|        0.1279738|
+|10  isoform_34441|        0.3993504|
+|11  isoform_54957|        0.7250456|
+
+
+3. Julia对读入的kME值文件排序
+
+```{julia}
+using DataFrames
+using CSV
+filePath = "D:/githubRepos/newQuarto/mysite/posts/2023-02-01Py_Jl_R_arrangeCompare/"
+moduleColor = "turquoise"
+kME = DataFrame(CSV.File(filePath*"kME_MM1.csv",header = 1)) 
+targetList = ["GeneID","kME_MM.turquoise"]
+subkME = kME[:,targetList]
+sort!(subkME,2,rev=true) # 排序
+println(subkME)
+```
+![](juliaOutPut.png)

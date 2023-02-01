@@ -1,0 +1,86 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Chen Xinhua",
+    "section": "",
+    "text": "Chen Xinhua is a Ph.D. candidate for forest tree genetics and breeding at Chinese Academy of Forestry.\nResearch subjects: masson pine, tree improvement, drought, transcriptome, microRNA\nSkills: molecular cloning, vector construction, transgene, plant tissue regeneration, bioinformatics analysis, genetic data statistic analysis, field test implementation, pine orchard management，computer programming skills (python, R, julia, shell, perl)"
+  },
+  {
+    "objectID": "about.html#education",
+    "href": "about.html#education",
+    "title": "Chen Xinhua",
+    "section": "Education",
+    "text": "Education\n\nGuangxi University, Nanning, Guangxi, China B.A. in Chemical engineering in Forestry products | Sept 2007 - June 2011\nGuangxi University, Nanning, Guangxi, China M.S. in Forest tree genetics and breeding | Sept 2012 - June 2015\nChinese Academy of Forestry, Beijing, China Ph.D. candidate in Forest tree genetics and breeding | Sept 2019 - present"
+  },
+  {
+    "objectID": "about.html#experience",
+    "href": "about.html#experience",
+    "title": "Chen Xinhua",
+    "section": "Experience",
+    "text": "Experience\nAssistant engineer | Nanning Institute of Forestry | Nanning, Guangxi, China | Sept 2011 - Sept 2012\nTemporal position as vice manager | Shanghang Baisha State-run Forest Farm | Longyan, Fujian, China | May 2017 - July 2017\nEngineer | Nanning Institute of Forestry | Nanning, Guangxi, China | Sept 2015 - Sept 2019\n你好！欢迎！我是陈新华，这是我的个人博客，用于记录学习和感悟。"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Home",
+    "section": "",
+    "text": "^o^/ Welcome to my site!!"
+  },
+  {
+    "objectID": "posts/2023-02-01JuliaStrongTypeLang/index.html",
+    "href": "posts/2023-02-01JuliaStrongTypeLang/index.html",
+    "title": "从push!()看julia强类型语言特性",
+    "section": "",
+    "text": "总说julia是强类型语言，但是原来感受不是很深。 直到用到push!().\n按一般的理解push!()函数可以向vector里添加元素，如，\n\nhaystack = [\"abc\",\"abc\",\"xyz\",\"opq\",\"rst\",\"def\",\"ghk\",\"ccc\"]\nneedle = \"a\"\npush!(haystack,needle)\n\n9-element Vector{String}:\n \"abc\"\n \"abc\"\n \"xyz\"\n \"opq\"\n \"rst\"\n \"def\"\n \"ghk\"\n \"ccc\"\n \"a\"\n\n\n但如果needle有两个元素，push!()就不行，\n\nhaystack = [\"abc\",\"abc\",\"xyz\",\"opq\",\"rst\",\"def\",\"ghk\",\"ccc\"]\nneedle = [\"a\",\"c\"]\npush!(haystack,needle)\n\nLoadError: MethodError: \u001b[0mCannot `convert` an object of type \u001b[92mVector{String}\u001b[39m\u001b[0m to an object of type \u001b[91mString\u001b[39m\n\u001b[0mClosest candidates are:\n\u001b[0m  convert(::Type{String}, \u001b[91m::String\u001b[39m) at essentials.jl:218\n\u001b[0m  convert(::Type{T}, \u001b[91m::T\u001b[39m) where T<:AbstractString at strings/basic.jl:231\n\u001b[0m  convert(::Type{T}, \u001b[91m::AbstractString\u001b[39m) where T<:AbstractString at strings/basic.jl:232\n\u001b[0m  ...\n\n\n其实，问题的本质不在于needle元素的多少，而在于needle的类型，即使needle只有一个元素，但如果类型是Vector{String}，那样也不行，如下：\n\nhaystack = [\"abc\",\"abc\",\"xyz\",\"opq\",\"rst\",\"def\",\"ghk\",\"ccc\"] # 8-element Vector{String}\npush!(haystack,needle)\nneedle = [\"a\"] # 1-element Vector{String}\npush!(haystack,needle)\n\nLoadError: MethodError: \u001b[0mCannot `convert` an object of type \u001b[92mVector{String}\u001b[39m\u001b[0m to an object of type \u001b[91mString\u001b[39m\n\u001b[0mClosest candidates are:\n\u001b[0m  convert(::Type{String}, \u001b[91m::String\u001b[39m) at essentials.jl:218\n\u001b[0m  convert(::Type{T}, \u001b[91m::T\u001b[39m) where T<:AbstractString at strings/basic.jl:231\n\u001b[0m  convert(::Type{T}, \u001b[91m::AbstractString\u001b[39m) where T<:AbstractString at strings/basic.jl:232\n\u001b[0m  ...\n\n\n也同样报错\n为什么？ 因为haystack是一个Vector{String}类型，它要求Vector里的元素是String，才可以添加，至于为什么是Vector{String}类型，这是Julia的类型推断系统决定的。 因此，当needle是String类型的时候，可以被push!到Vector{String}中， 也即，添加元素的类型要与目标容器内部的元素类型保持一致。而不在于添加的元素个数，如，\n\npsh1 = [[\"a\",\"b\"],[\"c\",\"d\"],[\"e\",\"f\"]] # 3-element Vector{String}\n\npsh2 = [\"x\",\"y\"] # 2-element Vector{String}\n\npush!(psh1,psh2)\n\n4-element Vector{Vector{String}}:\n [\"a\", \"b\"]\n [\"c\", \"d\"]\n [\"e\", \"f\"]\n [\"x\", \"y\"]\n\n\npsh1的元素类型是Vector{String}因此，psh2作为相同的类型，可以被push.\n最重要的是类型，而不是元素个数。 当然，你也可以理解成psh2看成一个整体，它就只含有一个元素，但这不是本质。 况且，你看psh2是否为整体，也是要基于它的类型。 总之，要多留心对象的类型。\n其实julia的mannual里将push!()定义得很好了，\n push!()是添加item或items到collection里。 因此，items类型要与collection里的item类型一致。\n而相比之，append!()是添加另一个collection里的所有元素到另一个collection里。 因此，两个函数对待item的方式不一样，push!()看整体，append!()把collection拆开一层（只要是可迭代对象），因此，才会有append!(A,“abc”)，得到的是拆开的”a”,“b”,“c”.\n而且注意，append!()即使失败，也会在目标对象中添加”#undef”元素。\n\npsh1 = [[\"a\",\"b\"],[\"c\",\"d\"],[\"e\",\"f\"]] # 3-element Vector{String}\n\npsh2 = [\"x\",\"y\"] # 2-element Vector{String}\n\nappend!(psh1,psh2)\n\nprintln(psh1)\n\nLoadError: MethodError: \u001b[0mCannot `convert` an object of type \u001b[92mString\u001b[39m\u001b[0m to an object of type \u001b[91mVector{String}\u001b[39m\n\u001b[0mClosest candidates are:\n\u001b[0m  convert(::Type{T}, \u001b[91m::LinearAlgebra.Factorization\u001b[39m) where T<:AbstractArray at D:\\Program Files\\Julia-1.8.4\\share\\julia\\stdlib\\v1.8\\LinearAlgebra\\src\\factorization.jl:58\n\u001b[0m  convert(::Type{Vector{String}}, \u001b[91m::LibGit2.StrArrayStruct\u001b[39m) at D:\\Program Files\\Julia-1.8.4\\share\\julia\\stdlib\\v1.8\\LibGit2\\src\\strarray.jl:13\n\u001b[0m  convert(::Type{T}, \u001b[91m::AbstractArray\u001b[39m) where T<:Array at array.jl:617\n\u001b[0m  ...\n\n\n多个两个元素#undef"
+  },
+  {
+    "objectID": "posts/2023-02-01myFirstBlogPost/DataFrameAddRowPy.html",
+    "href": "posts/2023-02-01myFirstBlogPost/DataFrameAddRowPy.html",
+    "title": "python DataFrame adding row",
+    "section": "",
+    "text": "Picture from bing.gifposter.com\n\n\nDataFrame的学习笔记之添加行\n\nimport pandas as pd\n\ntechnologies = {\n    'Courses':[\"Spark\",\"Hadoop\",\"pandas\",\"Java\",\"Pyspark\"],\n    'Fee' :[20000,25000,30000,22000,26000],\n    'Duration':['30days','40days','35days','60days','50days'],\n    'Discount':[1000,2500,1500,1200,3000]\n               }\ndf = pd.DataFrame(technologies)\nnewRow = {'Courses':'Hyperion', 'Fee':24000, 'Duration':'55days', 'Discount':1800}\n\n\n方法一\nappend()字典，字典键为列名，值为列的内容。增加的行成为DataFrame最后一行。\n\ndf2 = df.append(newRow,ignore_index = True)\nprint(df2)\n\n    Courses    Fee Duration  Discount\n0     Spark  20000   30days      1000\n1    Hadoop  25000   40days      2500\n2    pandas  30000   35days      1500\n3      Java  22000   60days      1200\n4   Pyspark  26000   50days      3000\n5  Hyperion  24000   55days      1800\n\n\nFutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.\n  df2 = df.append(newRow,ignore_index = True)\n\n\n\n\n方法二\nappend()列表到DataFrame指定行\n\naddList = [\"C++\", 28000, \"45days\", 4500]\ndf3 = df.append(pd.DataFrame([addList],index=['7'],columns= df.columns)) \nprint(df3)\n\n   Courses    Fee Duration  Discount\n0    Spark  20000   30days      1000\n1   Hadoop  25000   40days      2500\n2   pandas  30000   35days      1500\n3     Java  22000   60days      1200\n4  Pyspark  26000   50days      3000\n7      C++  28000   45days      4500\n\n\nFutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.\n  df3 = df.append(pd.DataFrame([addList],index=['7'],columns= df.columns))\n\n\n注意，添加List到row时，list外边还要加一个中括号,其本质是先将list转为DataFrame,即先加上index和columns信息，变成一个一行的DataFrame，再append到原DataFrame中。\n\n\n方法三\nloc[]增加一个列表list到DataFrame\n\nnewlst =  [\"Ruby\", 27000, \"60days\", 2000]\ndf.loc[len(df)] = newlst \nprint(df)\n\n   Courses    Fee Duration  Discount\n0    Spark  20000   30days      1000\n1   Hadoop  25000   40days      2500\n2   pandas  30000   35days      1500\n3     Java  22000   60days      1200\n4  Pyspark  26000   50days      3000\n5     Ruby  27000   60days      2000\n\n\n这种索引形式的添加，是直接在原df生效的，并不需要重新赋值给新变量，而且List就是横着直接成为DataFrame的一行\n\n\n方法四\nappend一个Seies到Row\n\ndf4 = df.append(pd.Series(newlst,index = df.columns),ignore_index = True)\nprint(df4)\n\n   Courses    Fee Duration  Discount\n0    Spark  20000   30days      1000\n1   Hadoop  25000   40days      2500\n2   pandas  30000   35days      1500\n3     Java  22000   60days      1200\n4  Pyspark  26000   50days      3000\n5     Ruby  27000   60days      2000\n6     Ruby  27000   60days      2000\n\n\nFutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.\n  df4 = df.append(pd.Series(newlst,index = df.columns),ignore_index = True)\n\n\n这里如果pd.Series()新建Series时，没有添加name参数，则此新建的Series没有name,或者说是name是None. 而如果在新建Series时，添加name= 则此Series就有了名字。如下 S1 = pd.Series(newlst,index = df.columns, name = “KFC”)\n如果用append添加Series为行，那么index就成为列名，而Series的name就成为index.如果没有name,就必须加上ignore_index= True.\n\n\n方法五\nconcat\n\nnew_row = pd.DataFrame({'Courses':'Huawei', 'Fee':24000, 'Duration':'55days', 'Discount':1800}, index=[0])\ndf5 = pd.concat([new_row,df.loc[:]]).reset_index(drop=True)\nprint(df5)\n\n   Courses    Fee Duration  Discount\n0   Huawei  24000   55days      1800\n1    Spark  20000   30days      1000\n2   Hadoop  25000   40days      2500\n3   pandas  30000   35days      1500\n4     Java  22000   60days      1200\n5  Pyspark  26000   50days      3000\n6     Ruby  27000   60days      2000\n\n\n增加的new_row排在前，则new_row就在新的DataFrame最前，如果new_row排在后[df.loc[:],new_row], 则new_row在新DataFrame最后\n\ndf6 = pd.concat([df.loc[:],new_row]).reset_index(drop=True)\nprint(df6)\n\n   Courses    Fee Duration  Discount\n0    Spark  20000   30days      1000\n1   Hadoop  25000   40days      2500\n2   pandas  30000   35days      1500\n3     Java  22000   60days      1200\n4  Pyspark  26000   50days      3000\n5     Ruby  27000   60days      2000\n6   Huawei  24000   55days      1800\n\n\n注意concat与append的语法区别，concat只能写成concat后面接括号的形式，而不能写成df.concat的形式， 不同的函数调用方式不一样，要区分。\n\n\n方法六\nloc添加 思路也简单，df.loc[‘7’] 或df.loc[‘7’,:]索引到这一行，然后把一个list赋值就行。 注意，这种方法也是默认inplace生效的。\n\ndf.loc['8'] = [\"Beehive\",28000,\"80days\",6000]\nprint(df)\n\n   Courses    Fee Duration  Discount\n0    Spark  20000   30days      1000\n1   Hadoop  25000   40days      2500\n2   pandas  30000   35days      1500\n3     Java  22000   60days      1200\n4  Pyspark  26000   50days      3000\n5     Ruby  27000   60days      2000\n8  Beehive  28000   80days      6000\n\n\nOK,DataFrame添加行的方法全部总结完成。\n参考： https://sparkbyexamples.com/pandas/how-to-append-row-to-pandas-dataframe/#:~:text=You%20can%20create%20a%20DataFrame,will%20get%20you%20an%20error"
+  },
+  {
+    "objectID": "posts/2023-02-01Py_Jl_R_arrangeCompare/index.html",
+    "href": "posts/2023-02-01Py_Jl_R_arrangeCompare/index.html",
+    "title": "python,R,Julia的排序对比",
+    "section": "",
+    "text": "python的pandas和Julia的DataFrames有无类似情况，将三者放在一起，做一个对比。\n\npython对读入的kME值文件排序\n\n\nimport pandas as pd\n\nfilePath = \"D:/githubRepos/newQuarto/mysite/posts/2023-02-01Py_Jl_R_arrangeCompare/\"\nmoduleColor = \"turquoise\"\nkMEColName = \"kME_MM.\"+moduleColor\nkME = pd.read_csv(filePath+\"kME_MM1.csv\")\nMod = kME[[\"GeneID\",kMEColName]].sort_values(by = kMEColName,ascending=False)\nprint(Mod)\n\n            GeneID  kME_MM.turquoise\n8    isoform_54957          0.725046\n3    isoform_34441          0.399350\n4    isoform_64227          0.127974\n1    isoform_20223         -0.183633\n9   isoform_105773         -0.225512\n10  isoform_282332         -0.371250\n2   isoform_278451         -0.376636\n6    isoform_68174         -0.689156\n7    isoform_33211         -0.863398\n0    isoform_86622         -0.871054\n5    isoform_74965         -0.882185\n\n\n以上结果可以看出，即使列名“kME_MM.turquoise”当中含有“.”号，排序仍然可以正常运行。\n\nR 对读入的kME值文件排序\n\nlibrary(dplyr)\ndf <- read.csv(\"D:/githubRepos/newQuarto/mysite/posts/2023-02-01Py_Jl_R_arrangeCompare/kME_MM1.csv\")\ndf2 <- df[c(\"GeneID\",\"kME_MM.turquoise\")] \nprint(df2)\n\ndf3 <- df2 %>% arrange(kME_MM.turquoise)\nprint(df3)\n\n\n\n\nGeneID\nkME_MM.turquoise\n\n\n\n\n1 isoform_74965\n-0.8821846\n\n\n2 isoform_86622\n-0.8710540\n\n\n3 isoform_33211\n-0.8633982\n\n\n4 isoform_68174\n-0.6891558\n\n\n5 isoform_278451\n-0.3766357\n\n\n6 isoform_282332\n-0.3712497\n\n\n7 isoform_105773\n-0.2255115\n\n\n8 isoform_20223\n-0.1836331\n\n\n9 isoform_64227\n0.1279738\n\n\n10 isoform_34441\n0.3993504\n\n\n11 isoform_54957\n0.7250456\n\n\n\n\nJulia对读入的kME值文件排序\n\nusing DataFrames\nusing CSV\nfilePath = \"D:/githubRepos/newQuarto/mysite/posts/2023-02-01Py_Jl_R_arrangeCompare/\"\nmoduleColor = \"turquoise\"\nkME = DataFrame(CSV.File(filePath*\"kME_MM1.csv\",header = 1)) \ntargetList = [\"GeneID\",\"kME_MM.turquoise\"]\nsubkME = kME[:,targetList]\nsort!(subkME,2,rev=true) # 排序\nprintln(subkME)"
+  },
+  {
+    "objectID": "posts/2023-02-01SecondBlogPost/veteranQuartoBlogers.html",
+    "href": "posts/2023-02-01SecondBlogPost/veteranQuartoBlogers.html",
+    "title": "Veteran Quarto bloggers",
+    "section": "",
+    "text": "This is a blog of some seasoned Quarto users, which have great reference value.\nhttps://samanthacsik.github.io/posts/2022-10-24-quarto-blogs/#ii.-whats-the-difference-between-a-website-and-a-blog\nhttps://albert-rapp.de/posts/13_quarto_blog_writing_guide/13_quarto_blog_writing_guide.html"
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "My Blog",
+    "section": "",
+    "text": "从push!()看julia强类型语言特性\n\n\n\n\n\n\n\nJulia\n\n\nArray\n\n\nVector\n\n\n\n\n\n\n\n\n\n\n\nFeb 1, 2023\n\n\nChen Xinhua\n\n\n\n\n\n\n  \n\n\n\n\npython DataFrame adding row\n\n\n\n\n\n\n\npython\n\n\ncode\n\n\n\n\nA summary of methods of adding row to a python DataFrame\n\n\n\n\n\n\nFeb 1, 2023\n\n\nChen Xinhua\n\n\n\n\n\n\n  \n\n\n\n\npython,R,Julia的排序对比\n\n\n\n\n\n\n\npython\n\n\nR\n\n\nJulia\n\n\ncode\n\n\n\n\n\n\n\n\n\n\n\nFeb 1, 2023\n\n\nChen Xinhua\n\n\n\n\n\n\n  \n\n\n\n\nVeteran Quarto bloggers\n\n\n\n\n\n\n\nQuarto\n\n\n\n\nlots of tips useful for blog customization\n\n\n\n\n\n\nFeb 1, 2023\n\n\nChen Xinhua\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "talks/talks.html",
+    "href": "talks/talks.html",
+    "title": "CXH's website",
+    "section": "",
+    "text": "Nothing is here…"
+  },
+  {
+    "objectID": "talks.html",
+    "href": "talks.html",
+    "title": "talks",
+    "section": "",
+    "text": "No matching items"
+  },
+  {
+    "objectID": "welcome/welcome.html",
+    "href": "welcome/welcome.html",
+    "title": "CXH's website",
+    "section": "",
+    "text": "{width = 1200} ^o^/ Welcome to my site!!"
+  }
+]

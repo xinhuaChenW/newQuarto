@@ -1,0 +1,18 @@
+---
+title: "blog post title"
+description: "blog post description (appears underneath the title in smaller text) which is included on the listing page"
+author:
+  - name: Chen Xinhua
+    url: https://github.com/xinhuaChenW
+    orcid: 0000-0002-4930-7375
+    affiliation: Ph.D. candidate of Forest Tree Genetics and Breeding @ Chinese Academy of Forestry
+    # affiliation-url: https://ucsb-meds.github.io/ 
+date: 02-01-2023
+categories: [Quarto, python, code] # self-defined categories
+# citation: 
+  # url: https://samanthacsik.github.io/posts/2022-10-24-quarto-blogs/ 
+# image: preview_image.jpg
+draft: True # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+
+# The content of this index.qmd in posts directory is reffed from <https://samanthacsik.github.io/posts/2022-10-24-quarto-blogs/>
+---

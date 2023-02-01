@@ -1,0 +1,4 @@
+- source: project
+  netlify:
+    - id: a64326d4-ea99-4d1f-a6ef-6f41c6efbf3e
+      url: 'https://cxhblog.netlify.app'

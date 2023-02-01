@@ -1,0 +1,11 @@
+{
+  "hash": "9e61657a2cf1ee8b3e2995d54c73a853",
+  "result": {
+    "markdown": "---\ntitle: python code test\nauthor: Quarto\ndate: 1/31/2023\ncategories:\n  - test\n  - code\nformat:\n  html:\n    code-fold: false\ndraft: true\n---\n\nFor a demonstration of a line plot on a polar axis, see @fig-polar.\n\n::: {.cell execution_count=1}\n``` {.python .cell-code}\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(\n  subplot_kw = {'projection': 'polar'} \n)\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n```\n\n::: {.cell-output .cell-output-display}\n![A line plot on a polar axis](test_files/figure-html/fig-polar-output-1.png){#fig-polar}\n:::\n:::\n\n\n",
+    "supporting": [
+      "test_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

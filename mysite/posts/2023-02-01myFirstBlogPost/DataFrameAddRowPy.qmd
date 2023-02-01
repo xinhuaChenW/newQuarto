@@ -1,0 +1,108 @@
+---
+title: "python DataFrame adding row"
+description: "A summary of methods of adding row to a python DataFrame"
+author:
+  - name: Chen Xinhua
+    url: https://github.com/xinhuaChenW
+    orcid: 0000-0002-4930-7375
+    affiliation: Ph.D. candidate of Forest Tree Genetics and Breeding @ Chinese Academy of Forestry
+    # affiliation-url: https://ucsb-meds.github.io/ 
+date: "2/01/2023"
+categories: [python, code] # self-defined categories
+  
+format:
+  html:
+    code-fold: false
+jupyter: python3
+
+---
+![Picture from bing.gifposter.com](BlueBahamas_EN-US2634514272_1920x1080.jpg){width=800}
+
+
+
+DataFrame的学习笔记之添加行
+
+
+```{python}
+import pandas as pd
+
+technologies = {
+    'Courses':["Spark","Hadoop","pandas","Java","Pyspark"],
+    'Fee' :[20000,25000,30000,22000,26000],
+    'Duration':['30days','40days','35days','60days','50days'],
+    'Discount':[1000,2500,1500,1200,3000]
+               }
+df = pd.DataFrame(technologies)
+newRow = {'Courses':'Hyperion', 'Fee':24000, 'Duration':'55days', 'Discount':1800}
+```
+### 方法一
+
+append()字典，字典键为列名，值为列的内容。增加的行成为DataFrame最后一行。
+
+```{python}
+df2 = df.append(newRow,ignore_index = True)
+print(df2)
+```
+
+### 方法二
+append()列表到DataFrame指定行
+```{python}
+addList = ["C++", 28000, "45days", 4500]
+df3 = df.append(pd.DataFrame([addList],index=['7'],columns= df.columns)) 
+print(df3)
+```
+注意，添加List到row时，list外边还要加一个中括号,其本质是先将list转为DataFrame,即先加上index和columns信息，变成一个一行的DataFrame，再append到原DataFrame中。
+
+### 方法三
+loc[]增加一个列表list到DataFrame
+```{python}
+newlst =  ["Ruby", 27000, "60days", 2000]
+df.loc[len(df)] = newlst 
+print(df)
+```
+这种索引形式的添加，是直接在原df生效的，并不需要重新赋值给新变量，而且List就是横着直接成为DataFrame的一行
+
+### 方法四
+append一个Seies到Row
+```{python}
+df4 = df.append(pd.Series(newlst,index = df.columns),ignore_index = True)
+print(df4)
+```
+
+这里如果pd.Series()新建Series时，没有添加name参数，则此新建的Series没有name,或者说是name是None.
+而如果在新建Series时，添加name= 则此Series就有了名字。如下
+S1 = pd.Series(newlst,index = df.columns, name = "KFC")
+
+如果用append添加Series为行，那么index就成为列名，而Series的name就成为index.如果没有name,就必须加上ignore_index= True.
+
+### 方法五
+concat
+```{python}
+new_row = pd.DataFrame({'Courses':'Huawei', 'Fee':24000, 'Duration':'55days', 'Discount':1800}, index=[0])
+df5 = pd.concat([new_row,df.loc[:]]).reset_index(drop=True)
+print(df5)
+```
+
+增加的new_row排在前，则new_row就在新的DataFrame最前，如果new_row排在后[df.loc[:],new_row],
+则new_row在新DataFrame最后
+```{python}
+df6 = pd.concat([df.loc[:],new_row]).reset_index(drop=True)
+print(df6)
+```
+
+
+注意concat与append的语法区别，concat只能写成concat后面接括号的形式，而不能写成df.concat的形式，
+不同的函数调用方式不一样，要区分。
+
+### 方法六
+loc添加
+思路也简单，df.loc['7'] 或df.loc['7',:]索引到这一行，然后把一个list赋值就行。
+注意，这种方法也是默认inplace生效的。
+```{python}
+df.loc['8'] = ["Beehive",28000,"80days",6000]
+print(df)
+```
+
+OK,DataFrame添加行的方法全部总结完成。
+
+参考： <https://sparkbyexamples.com/pandas/how-to-append-row-to-pandas-dataframe/#:~:text=You%20can%20create%20a%20DataFrame,will%20get%20you%20an%20error>

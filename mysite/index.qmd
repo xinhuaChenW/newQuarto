@@ -1,7 +1,11 @@
 ---
-title: "mysite"
+title: "Home"
+# listing:
+  # contents: welcome
+  # sort: "date desc"
+  # type: default
+  # categories: true
+  # 图像文件不一定要放在当前文件夹，可以统一放入image文件夹，填入正确的路径即可引用。
 ---
-
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+![](./images/R-C (1).jpg) 
+\^o^/ Welcome to my site!!
