@@ -1,0 +1,22 @@
+---
+title: "The working mechanism of Julia"
+description: "A summary of methods of adding row to a python DataFrame"
+author:
+  - name: Chen Xinhua
+    url: https://github.com/xinhuaChenW
+    orcid: 0000-0002-4930-7375
+    affiliation: Ph.D. candidate of Forest Tree Genetics and Breeding @ Chinese Academy of Forestry
+    # affiliation-url:  
+date: "2/01/2023"
+categories: [python, code] # self-defined categories
+  
+format:
+  html:
+    code-fold: false
+jupyter: python3
+draft: true
+---
+1. 计算机语言一般工作过程
+1.1 前端：用户按照语法写成的语句
+1.2 编译器：compiler将用户写的语句翻译为机器能理解的机器码。因为不同机器（比如CPU架构（比如X86，ARM，M1）或是位数不同，所要用的编译器会不同，而且不同语言的编译器也不同，所以，不同语言在不同的机器上需要特定的编译器翻译才能工作。
+  LLVM：指一种通用的编译器，可以将不同的语言翻译给不同的机器，非常方便。代表为苹果软件的开发语言SWIFT，当然还有我们的主角Julia。
