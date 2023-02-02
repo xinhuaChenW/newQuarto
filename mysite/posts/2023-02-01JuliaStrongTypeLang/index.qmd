@@ -6,7 +6,7 @@ author:
     url: https://github.com/xinhuaChenW
     orcid: 0000-0002-4930-7375
     affiliation: Ph.D. candidate of Forest Tree Genetics and Breeding @ Chinese Academy of Forestry
-    # affiliation-url: https://ucsb-meds.github.io/ 
+    # affiliation-url:  
 date: "2/01/2023"
 categories: [Julia, Array, Vector] # self-defined categories
   
